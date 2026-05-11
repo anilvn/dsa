@@ -206,7 +206,7 @@ class Solution {
 
 ```java
 int sumOfDigits(int n) {
-    if (n == 0) return 0;
+    if (n < 10) return n;
     return (n % 10) + sumOfDigits(n / 10);
 }
 ```
@@ -217,7 +217,7 @@ int sumOfDigits(int n) {
 
 ```java
 int productOfDigits(int n) {
-    if (n == 0) return 1;
+    if (n < 10) return n;
     return (n % 10) * productOfDigits(n / 10);
 }
 ```
@@ -264,6 +264,14 @@ class Solution {
 ```java
 int fib(int k) {
     if (k <= 1) return k;
+    return fib(k - 1) + fib(k - 2);
+}
+
+int fib(int k) {
+    
+    if (k == 0) return 0;
+    if (k == 1) return 1;
+
     return fib(k - 1) + fib(k - 2);
 }
 ```
@@ -576,8 +584,45 @@ static String moveXToEnd(String s) {
 ## **Level 7: Subsequence Pattern (VERY IMPORTANT)**
 
 ### 24. Generate All Subsequences
+```text id="2zxj2f"
+arr = [1,2,3]
+```
 
+Output:
+
+```text id="7mdpj7"
+[]
+[1]
+[2]
+[3]
+[1,2]
+[1,3]
+[2,3]
+[1,2,3]
+```
+```text id="6drs5x"
+                    []
+               /          \
+           take1         notTake1
+            /                \
+        [1]                  []
+       /   \                /   \
+   [1,2] [1]             [2]   []
+```
 ```java
+//1
+void subsequences(int[] arr, int i, List<Integer> current, List<List<Integer>> result) {
+    if (i == arr.length) {
+        result.add(new ArrayList<>(current));
+        return;
+    }
+    current.add(arr[i]);
+    subsequences(arr, i + 1, current, result);
+    current.remove(current.size() - 1);
+    subsequences(arr, i + 1, current, result);
+}// call: subsequences(arr, 0, new ArrayList<>(), result);
+
+//2
 static void subseqRecursive(String s, int i, String current, List<String> result) {
     if (i == s.length()) {
         result.add(current);
@@ -590,19 +635,6 @@ static void subseqRecursive(String s, int i, String current, List<String> result
     // not pick
     subseqRecursive(s, i + 1, current, result);
 }
-
-//2
-void subsequences(int[] arr, int i, List<Integer> current, List<List<Integer>> result) {
-    if (i == arr.length) {
-        result.add(new ArrayList<>(current));
-        return;
-    }
-    current.add(arr[i]);
-    subsequences(arr, i + 1, current, result);
-    current.remove(current.size() - 1);
-    subsequences(arr, i + 1, current, result);
-}
-// call: subsequences(arr, 0, new ArrayList<>(), result);
 
 //3
 static void subseqSB(String s, int i, StringBuilder sb, List<String> result) {
@@ -626,6 +658,31 @@ static void subseqSB(String s, int i, StringBuilder sb, List<String> result) {
 ---
 
 ### 25. Generate Subsequences with Sum = K
+```text id="gv4uvv"
+arr = [1, 2, 1]
+K = 2
+```
+
+Output:
+
+```text id="bnixom"
+[1, 1]
+[2]
+```
+```text id="d7h4ll"
+                         []
+                    /          \
+                 take1        notTake1
+                 sum=1
+               /                 \
+           take2                notTake2
+           sum=3                sum=1
+          /    \               /      \
+      take1   notTake1     take1    notTake1
+      sum=4    sum=3       sum=2      sum=1
+                              |
+                           VALID
+```
 
 ```java
 void subsWithSumK(int[] arr, int i, int k, List<Integer> current) {
@@ -708,15 +765,49 @@ void binaryStrings(char[] arr, int i, int n) {
 ### 28. Generate Valid Parentheses
 
 ```java
-void validParentheses(int open, int close, int n, String current) {
-    if (current.length() == 2 * n) {
-        System.out.println(current);
-        return;
+public class GenerateValidParentheses {
+
+    // Recursive function
+    static void validParentheses(int open, int close, int n, String current) {
+
+        // Base case:
+        // If current string length becomes 2*n,
+        // it means we used all brackets
+        if (current.length() == 2 * n) {
+            System.out.println(current);
+            return;
+        }
+
+        // Add opening bracket if open count is less than n
+        if (open < n) {
+            validParentheses(open + 1, close, n, current + "(");
+        }
+
+        // Add closing bracket only if close count is less than open
+        // This keeps the parentheses valid
+        if (close < open) {
+            validParentheses(open, close + 1, n, current + ")");
+        }
     }
-    if (open < n) validParentheses(open + 1, close, n, current + "(");
-    if (close < open) validParentheses(open, close + 1, n, current + ")");
+
+    public static void main(String[] args) {
+
+        int n = 3;
+
+        System.out.println("Valid Parentheses for n = " + n);
+
+        // Initial call
+        validParentheses(0, 0, n, "");
+    }
 }
-// call: validParentheses(0, 0, n, "");
+```
+```
+Valid Parentheses for n = 3
+((()))
+(()())
+(())()
+()(())
+()()()
 ```
 
 ---
@@ -739,6 +830,11 @@ void hanoi(int n, char from, char to, char aux) {
 ## **Level 10: Advanced Backtracking**
 
 ### 30. Subsets
+
+* **Subset:** choose any elements, order does not matter.
+* **Subsequence:** choose elements in original order, skipping allowed.
+* Example: `[2,1]` is a valid subset of `[1,2]`, but not a valid subsequence.
+
 
 ```java
 static void printSubsets(int[] arr, int i, List<Integer> curr) {
@@ -769,11 +865,31 @@ void subsets(int[] nums, int i, List<Integer> current, List<List<Integer>> resul
 }
 // call: subsets(nums, 0, new ArrayList<>(), result);
 ```
+```
+[]
+[1]
+[1, 2]
+[1, 2, 3]
+[1, 3]
+[2]
+[2, 3]
+[3]
+```
 
 ---
 
 ### 31. Subsets II
-
+```text id="65xtzi"
+[1,2,2]
+```
+```text id="qkg1jj"
+[]
+[1]
+[2]
+[1,2]
+[2,2]
+[1,2,2]
+```
 ```java
 // Given an integer array nums that may contain duplicates, return all possible subsets (the power set).
 // The solution set must not contain duplicate subsets. Return the solution in any order.
@@ -797,6 +913,11 @@ void subsets(int[] nums, int i, List<Integer> current, List<List<Integer>> resul
         }
     }
 // call: Arrays.sort(nums); subsetsII(nums, 0, new ArrayList<>(), result);
+
+    static void subsets(int[] nums, int i,
+                        List<Integer> current,
+                        Set<List<Integer>> result) {
+                        }// will also works but needed sort in interview
 ```
 
 ---
@@ -948,6 +1069,21 @@ class Solution {
 ---
 
 ### 33. Combination Sum
+- Input Example
+
+```text id="j57knk"
+candidates = [2,3,6,7]
+target = 7
+```
+
+- Expected Output
+
+```text id="5kwll4"
+[
+ [2,2,3],
+ [7]
+]
+```
 
 ```java
 // Problem: Given an array of candidates and a target,
@@ -1278,6 +1414,78 @@ int partition(int[] arr, int l, int r) {
 ---
 
 ### 41. Count Inversions
+
+#### Problem Statement
+
+Given an array `arr[]`:
+
+```text id="mjlwmq"
+Count pairs (i, j)
+such that:
+```
+
+```text id="thjlwm"
+i < j
+AND
+arr[i] > arr[j]
+```
+---
+
+#### Example 1
+
+Input:
+
+```text id="0uq3jq"
+arr = [2, 4, 1, 3, 5]
+```
+
+Inversions:
+
+```text id="tt0pvl"
+(2,1)
+(4,1)
+(4,3)
+```
+
+Output:
+
+```text id="a4g8e4"
+3
+```
+#### Java Code — Brute Force
+
+```java id="z9wjlwm"
+import java.util.*;
+
+class Solution {
+
+    static int countInversions(int[] arr) {
+
+        int n = arr.length;
+
+        int count = 0;
+
+        for (int i = 0; i < n; i++) {
+
+            for (int j = i + 1; j < n; j++) {
+
+                if (arr[i] > arr[j]) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    public static void main(String[] args) {
+
+        int[] arr = {2, 4, 1, 3, 5};
+
+        System.out.println(countInversions(arr));
+    }
+}
+```
 
 ```java
 long mergeCount(int[] arr, int l, int r) {
