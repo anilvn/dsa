@@ -114,8 +114,7 @@ public class MaximumProductAfterKIncrements {
 
     public static int maximumProduct(int[] nums, int k) {
 
-        PriorityQueue<Integer> pq =
-                new PriorityQueue<>();
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
 
         // Min Heap
         for (int num : nums) {
@@ -130,15 +129,14 @@ public class MaximumProductAfterKIncrements {
             pq.offer(smallest + 1);
         }
 
-        long mod = 1_000_000_007L;
+        long mod = 1_000_000_007L; // Return answer modulo 10^9 + 7
 
         long product = 1;
 
         // Calculate product
         while (!pq.isEmpty()) {
 
-            product =
-                    (product * pq.poll()) % mod;
+            product = (product * pq.poll()) % mod;
         }
 
         return (int) product;

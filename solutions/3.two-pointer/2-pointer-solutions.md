@@ -171,20 +171,31 @@ Space Complexity: O(1)
 ```java
 // Optimal - positive numbers only
 static int countSubarraysLessThanEqualK(int[] arr, int k) {
-    int left = 0, sum = 0, count = 0;
+
+    int left = 0;
+    int sum = 0;
+    int count = 0;
 
     for (int right = 0; right < arr.length; right++) {
+
         sum += arr[right];
 
-        while (sum > k) {
-            sum -= arr[left++];
+        // shrink window if sum > k
+        // negative condtion shrink
+        while (sum > k && left <= right) {
+            sum -= arr[left];
+            left++;
         }
 
-        count += right - left + 1;
+        // all subarrays ending at right are valid
+        count += (right - left + 1);
     }
 
     return count;
 }
+
+// Time Complexity - O(n)
+// Space Complexity - O(1)
 
 /*
 Time Complexity: O(n)
@@ -432,6 +443,8 @@ Space Complexity: O(1)
 ```
 
 <br/>
+
+
 ## Longest Substring Without Repeating Characters
 
 Input
@@ -666,154 +679,132 @@ Space Complexity: O(1)
 */
 ```
 
+
+---
+## FRUIT INTO BASKETS
+
+### Problem Statement
+
+* Given an array `fruits`, you start from any index and move right.
+* You can pick fruits from at most **2 different types**.
+* Return the maximum number of fruits you can collect in a continuous subarray.
+
 ---
 
-## Binary Array Sliding Window (0/1 Flips)
+### Example
 
-Input
-arr = [0,0,1,1,0,1], k = 2
+#### Input
 
-Output
-5
-
-Approach
-Same pattern as Max Consecutive Ones III.
-
-```java id="x3e9pv"
-// Brute Force
-static int maxWindowAfterFlips(int[] arr, int k) {
-    int max = 0;
-
-    for (int i = 0; i < arr.length; i++) {
-        int zeros = 0;
-
-        for (int j = i; j < arr.length; j++) {
-
-            if (arr[j] == 0) {
-                zeros++;
-            }
-
-            if (zeros > k) {
-                break;
-            }
-
-            max = Math.max(max, j - i + 1);
-        }
-    }
-
-    return max;
-}
-
-/*
-Time Complexity: O(n^2)
-Space Complexity: O(1)
-*/
+```text
+fruits = [1,2,1]
 ```
 
-```java id="p4f6ln"
-// Optimal
-static int maxWindowAfterFlips(int[] arr, int k) {
-    int left = 0, zeros = 0, max = 0;
+#### Output
 
-    for (int right = 0; right < arr.length; right++) {
-
-        if (arr[right] == 0) {
-            zeros++;
-        }
-
-        while (zeros > k) {
-
-            if (arr[left++] == 0) {
-                zeros--;
-            }
-        }
-
-        max = Math.max(max, right - left + 1);
-    }
-
-    return max;
-}
-
-/*
-Time Complexity: O(n)
-Space Complexity: O(1)
-*/
+```text
+3
 ```
 
 ---
 
-## Fruits Into Baskets
+### Idea / Intuition
 
-Input
-fruits = [1,2,1,2,3]
+* We need the **longest subarray with at most 2 distinct numbers**.
+* Think of it like a sliding window problem.
+* Expand window to right.
+* If more than 2 types appear, shrink from left.
+* Track maximum window size.
 
-Output
-4
+---
 
-Approach
-Maintain at most 2 distinct fruits.
+### Brute Force Approach (Optional)
 
-```java id="r9u3fw"
-// Brute Force
-static int totalFruit(int[] fruits) {
-    int max = 0;
+* Try every starting point.
+* Keep adding elements until more than 2 types appear.
+* Update maximum length.
 
-    for (int i = 0; i < fruits.length; i++) {
-        Set<Integer> set = new HashSet<>();
+---
 
-        for (int j = i; j < fruits.length; j++) {
-            set.add(fruits[j]);
+### Java Code
 
-            if (set.size() > 2) {
-                break;
+```java
+// brute force code
+// Time Complexity - O(n^2)
+// Space Complexity - O(1)
+
+import java.util.*;
+
+class Solution {
+    static int totalFruit(int[] fruits) {
+        int n = fruits.length;
+        int maxLen = 0;
+
+        for (int i = 0; i < n; i++) {
+            Set<Integer> set = new HashSet<>();
+
+            for (int j = i; j < n; j++) {
+                set.add(fruits[j]);
+
+                if (set.size() > 2) break;
+
+                maxLen = Math.max(maxLen, j - i + 1);
             }
-
-            max = Math.max(max, j - i + 1);
-        }
-    }
-
-    return max;
-}
-
-/*
-Time Complexity: O(n^2)
-Space Complexity: O(1)
-*/
-```
-
-```java id="v1k6eg"
-// Optimal
-static int totalFruit(int[] fruits) {
-    Map<Integer, Integer> map = new HashMap<>();
-
-    int left = 0, max = 0;
-
-    for (int right = 0; right < fruits.length; right++) {
-
-        map.put(fruits[right],
-                map.getOrDefault(fruits[right], 0) + 1);
-
-        while (map.size() > 2) {
-            map.put(fruits[left], map.get(fruits[left]) - 1);
-
-            if (map.get(fruits[left]) == 0) {
-                map.remove(fruits[left]);
-            }
-
-            left++;
         }
 
-        max = Math.max(max, right - left + 1);
+        return maxLen;
     }
-
-    return max;
 }
-
-/*
-Time Complexity: O(n)
-Space Complexity: O(1)
-*/
 ```
+
+---
+
+### Optimized Approach
+
+### steps for optimized approach
+
+* Use sliding window
+* Maintain frequency map of fruit types
+* Expand right pointer
+* If map size > 2, shrink from left
+* Keep updating max length
+
+---
+
+### Java Code
+
+```java
+// optimized code with minimal comments
+// Time Complexity - O(n)
+// Space Complexity - O(1) (max 3 keys in map)
+
+import java.util.*;
+
+class Solution {
+    static int totalFruit(int[] fruits) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int left = 0, maxLen = 0;
+
+        for (int right = 0; right < fruits.length; right++) {
+            map.put(fruits[right], map.getOrDefault(fruits[right], 0) + 1);
+
+            while (map.size() > 2) {
+                int lf = fruits[left];
+                map.put(lf, map.get(lf) - 1);
+
+                if (map.get(lf) == 0) {
+                    map.remove(lf);
+                }
+                left++;
+            }
+
+            maxLen = Math.max(maxLen, right - left + 1);
+        }
+
+        return maxLen;
+    }
+}
+```
+
 
 ---
 
@@ -1057,6 +1048,8 @@ Space Complexity: O(1)
 */
 ```
 <br/>
+
+
 ## Subarray Product Less Than K
 
 Input
@@ -1255,80 +1248,136 @@ Space Complexity: O(1)
 ```
 
 ---
+## COUNT NUMBER OF NICE SUBARRAYS
 
-## Count Number Of Nice Subarrays
+### Problem Statement
 
-Input
-arr = [1,1,2,1,1], k = 3
+* Given an array `nums` and an integer `k`
+* A subarray is called **nice** if it contains exactly `k` odd numbers
+* Return total number of such subarrays
 
-Output
+---
+
+### Example
+
+#### Input
+
+```text
+nums = [1,1,2,1,1], k = 3
+```
+
+#### Output
+
+```text
 2
-
-Approach
-Convert odd/even → binary idea.
-
-```java id="n2k9qp"
-// Brute Force
-static int numberOfSubarrays(int[] arr, int k) {
-    int count = 0;
-
-    for (int i = 0; i < arr.length; i++) {
-        int odd = 0;
-
-        for (int j = i; j < arr.length; j++) {
-
-            if (arr[j] % 2 != 0) {
-                odd++;
-            }
-
-            if (odd == k) count++;
-        }
-    }
-
-    return count;
-}
-
-/*
-Time Complexity: O(n^2)
-Space Complexity: O(1)
-*/
 ```
 
-```java id="r6m1zx"
-// Optimal
-static int numberOfSubarrays(int[] arr, int k) {
-    return atMost(arr, k) - atMost(arr, k - 1);
-}
+---
 
-static int atMost(int[] arr, int k) {
-    if (k < 0) return 0;
+### Idea / Intuition
 
-    int left = 0, count = 0;
+* Convert array into **odd = 1, even = 0**
+* Now problem becomes:
+  → Count subarrays with sum = k
 
-    for (int right = 0; right < arr.length; right++) {
+But direct sliding window is tricky for "exact k"
 
-        if (arr[right] % 2 != 0) {
-            k--;
-        }
+Better idea:
 
-        while (k < 0) {
-            if (arr[left] % 2 != 0) {
-                k++;
+* Count subarrays with **at most k odds**
+* Count subarrays with **at most (k - 1) odds**
+* Answer = difference
+
+Why this works:
+
+* atMost(k) includes all subarrays with 0..k odds
+* subtract atMost(k-1) → leaves exactly k odds
+
+---
+
+### Brute Force Approach (Optional)
+
+* Try every subarray
+* Count odd numbers
+* If equal to k → increase answer
+
+---
+
+### Java Code
+
+```java
+// brute force code
+// Time Complexity - O(n^2)
+// Space Complexity - O(1)
+
+class Solution {
+    static int numberOfSubarrays(int[] nums, int k) {
+        int n = nums.length;
+        int count = 0;
+
+        for (int i = 0; i < n; i++) {
+            int odd = 0;
+
+            for (int j = i; j < n; j++) {
+                if (nums[j] % 2 != 0) odd++;
+
+                if (odd == k) count++;
+                if (odd > k) break;
             }
-            left++;
         }
 
-        count += right - left + 1;
+        return count;
+    }
+}
+```
+
+---
+
+### Optimized Approach
+
+### steps for optimized approach
+
+* Use sliding window for "at most k odd numbers"
+* Maintain left pointer
+* Expand right pointer
+* If odd count > k → shrink left
+* Count valid subarrays ending at each index
+* Final answer = atMost(k) - atMost(k - 1)
+
+---
+
+### Java Code
+
+```java
+// optimized code with minimal comments
+// Time Complexity - O(n)
+// Space Complexity - O(1)
+
+class Solution {
+
+    static int numberOfSubarrays(int[] nums, int k) {
+        return atMost(nums, k) - atMost(nums, k - 1);
     }
 
-    return count;
-}
+    static int atMost(int[] nums, int k) {
+        int left = 0, count = 0, odd = 0;
 
-/*
-Time Complexity: O(n)
-Space Complexity: O(1)
-*/
+        for (int right = 0; right < nums.length; right++) {
+            if (nums[right] % 2 != 0) odd++;
+
+            while (odd > k) {
+                if (nums[left] % 2 != 0) odd--;
+                left++;
+            }
+
+            count += (right - left + 1);
+        }
+
+        return count;
+    }
+}
 ```
+
 
 ---
 
@@ -1575,11 +1624,13 @@ static String minWindow(String s, String t) {
 
         while (required == 0) {
 
+            // update ans
             if (right - left + 1 < minLen) {
                 minLen = right - left + 1;
                 start = left;
             }
-
+            
+            // shrink
             freq[s.charAt(left)]++;
 
             if (freq[s.charAt(left)] > 0) {

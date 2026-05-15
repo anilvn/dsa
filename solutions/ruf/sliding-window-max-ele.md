@@ -24,14 +24,14 @@ Output:
 
 ---
 
-# 1. Optimal Approach — Deque
+## 1. Optimal Approach — Deque
 
 Time Complexity: `O(n)`
 Space Complexity: `O(k)`
 
 ---
 
-## Core Idea
+### Core Idea
 
 Maintain a deque that stores indices of useful elements.
 
@@ -45,7 +45,7 @@ The deque maintains elements in decreasing order.
 
 ---
 
-## Visualization
+### Visualization
 
 For:
 
@@ -73,7 +73,7 @@ Deque stores indices.
 
 ---
 
-## Java Code — Deque Approach
+### Java Code — Deque Approach
 
 ```java
 import java.util.*;
@@ -132,7 +132,7 @@ class Solution {
 
 ---
 
-# Why Deque Works
+## Why Deque Works
 
 Suppose deque contains:
 
@@ -162,14 +162,14 @@ O(n)
 
 ---
 
-# 2. Heap (Priority Queue) Approach
+## 2. Heap (Priority Queue) Approach
 
 Time Complexity: `O(n log n)`
 Space Complexity: `O(n)`
 
 ---
 
-## Core Idea
+### Core Idea
 
 Use a max heap to always get the largest element.
 
@@ -187,7 +187,7 @@ We remove outdated elements using index.
 
 ---
 
-## Algorithm
+### Algorithm
 
 For each element:
 
@@ -197,7 +197,7 @@ For each element:
 
 ---
 
-## Java Code — Heap Approach
+### Java Code — Heap Approach
 
 ```java
 import java.util.*;
@@ -249,7 +249,7 @@ class Solution {
 
 ---
 
-# Dry Run — Heap
+## Dry Run — Heap
 
 Example:
 
@@ -320,7 +320,7 @@ Answer = 5
 
 ---
 
-# Deque vs Heap
+## Deque vs Heap
 
 | Feature             | Deque  | Heap       |
 | ------------------- | ------ | ---------- |
@@ -333,7 +333,7 @@ Answer = 5
 
 ---
 
-# Key Insight
+## Key Insight
 
 Deque removes useless elements immediately.
 

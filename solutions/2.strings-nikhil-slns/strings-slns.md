@@ -657,7 +657,7 @@ class Solution {
         // build final string
         StringBuilder ans = new StringBuilder();
 
-        for (char ch : stack) {
+        for (char ch : stack) {  // st traversal : bottom -> top
             ans.append(ch);
         }
 
@@ -1254,6 +1254,60 @@ if (i > 0 &&
     continue;
 }
 ```
+```java
+import java.util.*;
+
+class Solution {
+
+    public List<List<Integer>> permuteUnique(int[] nums) {
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        Arrays.sort(nums);
+
+        boolean[] used = new boolean[nums.length];
+
+        backtrack(result, new ArrayList<>(), nums, used);
+
+        return result;
+    }
+
+    private void backtrack(List<List<Integer>> result,
+                           List<Integer> temp,
+                           int[] nums,
+                           boolean[] used) {
+
+        if (temp.size() == nums.length) {
+
+            result.add(new ArrayList<>(temp));
+            return;
+        }
+
+        for (int i = 0; i < nums.length; i++) {
+
+            if (used[i]) {
+                continue;
+            }
+
+            // Skip duplicate branch
+            if (i > 0 &&
+                nums[i] == nums[i - 1] &&
+                !used[i - 1]) {
+
+                continue;
+            }
+
+            used[i] = true;
+            temp.add(nums[i]);
+
+            backtrack(result, temp, nums, used);
+
+            used[i] = false;
+            temp.remove(temp.size() - 1);
+        }
+    }
+}
+```
 
 This avoids generating duplicate permutations entirely.
 
@@ -1646,141 +1700,6 @@ O(1)
 
 
 ---
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
-
-
----
-
-<br/><br/><br/><br/>
-
 
 
 
@@ -2605,6 +2524,40 @@ class Solution {
     }
 }
 ```
+```java
+class Solution {
+
+    static boolean validPalindrome(String s) {
+
+        int left = 0;
+        int right = s.length() - 1;
+
+        while (left < right && 
+                        s.charAt(left) == s.charAt(right) ) {
+                left++;
+                right--;
+        }
+         return isPalindrome(s, left + 1, right) ||
+                       isPalindrome(s, left, right - 1);
+    }
+
+    static boolean isPalindrome(String s, int left, int right) {
+
+        while (left < right) {
+
+            if (s.charAt(left) != s.charAt(right)) {
+                return false;
+            }
+
+            left++;
+            right--;
+        }
+
+        return true;
+    }
+}
+
+```
 
 ### Time and Space Complexities
 
@@ -2703,6 +2656,32 @@ class Solution {
 
                     return false;
                 }
+            }
+        }
+
+        return stack.isEmpty();
+    }
+}
+```
+```java
+import java.util.Stack;
+
+class Solution {
+
+    static boolean isValid(String s) {
+
+        Stack<Character> stack = new Stack<>();
+
+        for (char ch : s.toCharArray()) {
+            // opening brackets
+            if (ch == '(' ) stack.push(')');
+            else if (ch == '{' ) stack.push('}');
+            else if (ch == '[' ) stack.push(']');
+            else if(stack.empty()){
+                 return false;
+            }else{
+                char top = stack.pop();
+                if (top !=ch) return false;
             }
         }
 
@@ -3028,7 +3007,7 @@ Rules:
 #### Sample Output
 
 ```text id="b1q9ab"
-"1010"
+"1001"
 ```
 
 ---
@@ -3287,10 +3266,66 @@ class Solution {
 
 * Time Complexity: `O(n^2)`
 * Space Complexity: `O(1)`
+```java
+public class LongestPalindromicSubstring {
 
+    public static String longestPalindrome(String s) {
+
+        if (s == null || s.length() < 2) {
+            return s;
+        }
+
+        int start = 0;
+        int maxLength = 1;
+
+        for (int i = 0; i < s.length(); i++) {
+
+            // Odd length palindrome
+            int len1 = expand(s, i, i);
+
+            // Even length palindrome
+            int len2 = expand(s, i, i + 1);
+
+            int currentMax = Math.max(len1, len2);
+
+            if (currentMax > maxLength) {
+
+                maxLength = currentMax;
+
+                start = i - (currentMax - 1) / 2;
+            }
+        }
+
+        return s.substring(start, start + maxLength);
+    }
+
+    private static int expand(String s, int left, int right) {
+
+        while (left >= 0 &&
+               right < s.length() &&
+               s.charAt(left) == s.charAt(right)) {
+
+            left--;
+            right++;
+        }
+
+        // Length after crossing boundary
+        return right - left - 1;
+    }
+
+    public static void main(String[] args) {
+
+        System.out.println(longestPalindrome("babad"));
+        System.out.println(longestPalindrome("cbbd"));
+        System.out.println(longestPalindrome("racecar"));
+        System.out.println(longestPalindrome("abba"));
+    }
+}
+```
 
 <br/><br/><br/>
-# LONGEST SUBSTRING WITHOUT REPEATING CHARACTERS (NOTES)
+
+## LONGEST SUBSTRING WITHOUT REPEATING CHARACTERS 
 
 ### Problem Statement
 
@@ -3388,6 +3423,56 @@ If you want, I can also show:
 
 * optimized version using HashMap (faster pointer jumps)
 * or interview tricks to explain this in 30 seconds
+
+```java
+
+import java.util.*;
+
+class Solution {
+
+    static int lengthOfLongestSubstring(String s) {
+
+        Map<Character, Integer> map = new HashMap<>();
+
+        int left = 0;
+        int maxLength = 0;
+
+        for (int right = 0; right < s.length(); right++) {
+
+            char ch = s.charAt(right);
+
+            // duplicate found
+            if (map.containsKey(ch)) {
+                // move left only forward
+                left = Math.max(left, map.get(ch) + 1);
+            }
+
+            map.put(ch, right);
+
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+
+        return maxLength;
+    }
+
+}
+// time - O(n)
+// space - O(min(n, charset))
+
+```
+
+```java
+// we can replace
+if (map.containsKey(ch)) {
+    // move left only forward
+    left = Math.max(left, map.get(ch) + 1);
+}
+
+// to below code
+if (map.containsKey(ch) && map.get(ch) >= left) {
+    left = map.get(ch) + 1;
+}
+```
 
 
 
@@ -3522,8 +3607,8 @@ s = "cbaebabacd", p = "abc"
 
 #### Sample Output
 
-```text id="a1b2c4"
-[0, 6]
+ ```text id="a1b2c4"
+[0, 6]  // starting points only for angaragam.. with those st indeces can form anagram of p in s
 ```
 
 ---

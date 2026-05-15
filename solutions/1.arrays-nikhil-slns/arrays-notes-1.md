@@ -789,6 +789,33 @@ public class FindDisappearedNumbersOptimized {
     }
 }
 ```
+```java
+        /*
+            Example Traversal
+
+            nums = [4,3,2,7,8,2,3,1]
+
+            i=0 -> value=4 -> index=3
+            mark nums[3] negative
+
+            [4,3,2,-7,8,2,3,1]
+
+            i=1 -> value=3 -> index=2
+
+            [4,3,-2,-7,8,2,3,1]
+
+            i=2 -> value=-2
+            abs(-2)=2 -> index=1
+
+            [4,-3,-2,-7,8,2,3,1]
+
+            Continue...
+
+            Final array:
+
+            [-4,-3,-2,-7,8,2,-3,-1]
+        */
+```
 
 * Time Complexity: **O(n)**
 * Space Complexity: **O(1)** (excluding output array)
@@ -929,10 +956,17 @@ public class TopKFrequentOptimized {
         PriorityQueue<Pair> pq =
                 new PriorityQueue<>((a, b) -> b.freq - a.freq);
 
+        /*
+        PriorityQueue<int[]> pq =
+                        new PriorityQueue<>((a, b) -> b[1] - a[1]);
+        */
+
         for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
 
             // create Pair object and add to heap
             pq.add(new Pair(entry.getKey(), entry.getValue()));
+
+            //  pq.add(new int[]{entry.getKey(), entry.getValue()});
         }
 
         int[] result = new int[k];
@@ -1189,6 +1223,17 @@ num - 1 does not exist
 #### Brute Force Approach
 
 ```java id="longestconsecutive_bf"
+/*
+IMPORTANT:
+This problem checks NUMBER continuity,
+NOT array position continuity.
+
+WRONG THINKING:
+1 should be immediately beside 2 in array
+
+CORRECT THINKING:
+1 and 2 can be anywhere in array
+*/
 public class LongestConsecutiveBrute {
 
     public static int longestConsecutive(int[] nums) {
@@ -2152,7 +2197,6 @@ public class BoatsToSavePeopleOptimized {
         int right = people.length - 1;
 
         int boats = 0;
-
         while (left <= right) {
 
             // Lightest + heaviest fit together
@@ -2169,6 +2213,21 @@ public class BoatsToSavePeopleOptimized {
         return boats;
     }
 }
+
+/*
+---> keep in mind ---> Each boat can carry at most 2 people at the same time
+---> not said about ---> continuous filling of one boat
+Thats why below approach will fails.
+
+for (int i =0 ; i < n ; i++){
+    if (holidng + arr[i] <= capacity){
+        holidng += arr[i];
+    }else{
+        boaat++;
+        holidng = arr[i]+
+    }
+}
+*/
 ```
 
 * Time Complexity: **O(n log n)**
@@ -2259,12 +2318,9 @@ public class KthMissingPositiveBrute {
         while (k > 0) {
 
             // Number exists in array
-            if (index < arr.length &&
-                arr[index] == current) {
-
+            if (index < arr.length && arr[index] == current) {                
                 index++;
             } else {
-
                 // Missing number found
                 k--;
 
@@ -2774,6 +2830,50 @@ public class MatrixDiagonalSumOptimized {
 
 * Time Complexity: **O(n)**
 * Space Complexity: **O(1)**
+```java
+public class RectangularMatrixDiagonalSum {
+
+    public static int diagonalSum(int[][] mat) {
+
+        int rows = mat.length;
+        int cols = mat[0].length;
+
+        int sum = 0;
+
+        // Primary Diagonal
+        // i == j
+        for (int i = 0; i < Math.min(rows, cols); i++) {
+
+            sum += mat[i][i];
+        }
+
+        // Secondary Diagonal
+        // i + j == cols - 1
+        for (int i = 0; i < Math.min(rows, cols); i++) {
+
+            int j = cols - 1 - i;
+
+            // Avoid duplicate element
+            if (i != j) {
+                sum += mat[i][j];
+            }
+        }
+
+        return sum;
+    }
+
+    public static void main(String[] args) {
+
+        int[][] mat = {
+                {1, 2, 3, 4, 5},
+                {6, 7, 8, 9, 10},
+                {11, 12, 13, 14, 15}
+        };
+
+        System.out.println(diagonalSum(mat));
+    }
+}
+```
 
 
 
@@ -2911,9 +3011,12 @@ public class LastStoneWeightOptimized {
             int y = pq.poll(); // largest
             int x = pq.poll(); // second largest
 
-            // Remaining stone
-            if (y != x) {
-                pq.offer(y - x);
+            // Remaining weight
+            int z = y - x;
+
+            // Add remaining stone
+            if (z > 0) {
+                pq.offer(z);
             }
         }
 
@@ -4367,11 +4470,9 @@ public class ContiguousArray {
             // Prefix sum seen before
             if (map.containsKey(prefixSum)) {
 
-                int length =
-                        i - map.get(prefixSum);
+                int length = i - map.get(prefixSum);
 
-                maxLength =
-                        Math.max(maxLength, length);
+                maxLength = Math.max(maxLength, length);
 
             } else {
 
@@ -4549,13 +4650,11 @@ public class SubarraySumEqualsK {
             // Required previous prefix sum
             if (map.containsKey(prefixSum - k)) {
 
-                count +=
-                        map.get(prefixSum - k);
+                count += map.get(prefixSum - k);
             }
 
             // Store current prefix sum
-            map.put(prefixSum,
-                    map.getOrDefault(prefixSum, 0) + 1);
+            map.put(prefixSum, map.getOrDefault(prefixSum, 0) + 1);
         }
 
         return count;
