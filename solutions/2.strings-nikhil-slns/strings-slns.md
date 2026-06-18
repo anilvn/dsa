@@ -1,4 +1,40 @@
 
+
+
+1. **Sherlock and Valid String**
+2. **Two Strings**
+3. **Minimum Deletions To Make Two Strings Anagrams**
+4. **Repeated String**
+5. **Super Reduced String**
+6. **Longest Common Prefix**
+7. **Partition Labels**
+8. **Permutations — Without Duplicates**
+9. **Permutations — With Duplicates**
+10. **Decode String**
+11. **Sorting a Sentence**
+12. **Length of Last Word**
+13. **Isomorphic Strings**
+14. **Jewels & Stones**
+15. **Shuffle String**
+16. **Check if Sentence is a Pangram**
+17. **Re-organize String** (with 2 approaches)
+18. **Subsequence Check**
+19. **Valid Palindrome - II**
+20. **Valid Parentheses**
+21. **Reverse Words in a String II**
+22. **Reverse Only Letters**
+23. **Reverse Prefix of Word**
+24. **Maximum Odd Binary Number**
+25. **Longest Repeating Character Replacement**
+26. **Palindromic Substrings**
+27. **Longest Substring Without Repeating Characters**
+28. **Ransom Note**
+29. **Find All Anagrams in a String** (last one)
+
+
+<br/>
+<br/><br/><br/>
+
 # Sherlock and Valid String
 
 ### Problem Statement

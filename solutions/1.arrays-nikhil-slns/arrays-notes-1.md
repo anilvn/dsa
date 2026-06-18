@@ -1,3 +1,43 @@
+
+
+
+## Total Problems: 32
+
+1. **Equal Stacks**
+2. **Find Numbers Missing Between Two Arrays (Considering Frequency)**
+3. **Number of Good Pairs**
+4. **Smaller Numbers Than Current Number**
+5. **Search Insert Position**
+6. **Find Disappeared Numbers**
+7. **Top K Frequent Elements**
+8. **Squares of a Sorted Array**
+9. **Longest Consecutive Sequence**
+10. **3Sum Closest**
+11. **Maximum Product Subarray**
+12. **Maximum Average Subarray**
+13. **Longest Subarray with 2 Distinct Elements**
+14. **Maximum Number of Vowels in a Substring of Given Length**
+15. **Boats to Save People**
+16. **Kth Missing Positive Number**
+17. **Max Consecutive Ones**
+18. **Sum of Unique Elements**
+19. **Matrix Diagonal Sum**
+20. **Last Stone Weight**
+21. **Pivot Index**
+22. **Minimum Increments for Unique Array**
+23. **Left and Right Sum Differences**
+24. **Number of Islands**
+25. **Rotting Oranges**
+26. **01 Matrix**
+27. **Gas Station**
+28. **Contiguous Array**
+29. **Subarray Sum Equals K**
+
+Plus several empty sections at the end (with just blank space and line breaks), so there are **29 complete problems** documented in this file.
+<br/><br/><br/>
+
+<br/>
+
 ## Equal Stacks
 
 ### Problem Statement
@@ -2827,6 +2867,28 @@ public class MatrixDiagonalSumOptimized {
     }
 }
 ```
+```java
+public class MatrixDiagonalSumOptimized {
+
+    public static int diagonalSum(int[][] mat) {
+
+        int n = mat.length;
+        int sum = 0;
+
+        for (int i = 0; i < n; i++) {
+
+            sum += mat[i][i];
+
+            // Add secondary diagonal only if it's not the same cell
+            if (i != n - 1 - i) {
+                sum += mat[i][n - 1 - i];
+            }
+        }
+
+        return sum;
+    }
+}
+```
 
 * Time Complexity: **O(n)**
 * Space Complexity: **O(1)**
@@ -4703,12 +4765,106 @@ O(n)
 
 
 <br/><br/><br/>
+The confusion comes from the fact that these two problems look similar, but the **array properties are different**, so the optimal solutions are different.
+
+## Problem 1: Subarray Sum Equals K
+
+```java
+nums = [1, 2, 3]
+k = 3
+```
+
+Array can contain:
+
+* Positive numbers
+* Negative numbers
+* Zero
+
+### Why Sliding Window Fails
+
+Consider:
+
+```java
+nums = [1, -1, 2]
+k = 2
+```
+
+When a negative number appears:
+
+* Expanding window can decrease sum.
+* Shrinking window can increase sum.
+
+So there is no predictable behavior.
+
+Because of this, we use **Prefix Sum + HashMap**.
 
 ---
 
+| Situation                                        | Best Technique          |
+| ------------------------------------------------ | ----------------------- |
+| Exact sum K + negatives possible                 | Prefix Sum + HashMap    |
+| Exact sum K + only positive numbers              | Sliding Window          |
+| Exact sum K + binary array (0/1)                 | AtMost(K) - AtMost(K-1) |
+| Count subarrays with sum ≤ K                     | Sliding Window          |
+| Longest subarray with sum ≤ K (positive numbers) | Sliding Window          |
+| Negative numbers present anywhere                | Prefix Sum + HashMap    |
 
 
 
+---
+
+### Binary Subarrays With Sum
+### Input arr = [1,0,1,0,1], goal = 2
+
+### Output 4
+```java
+-- Approach Use at most trick.
+
+// Brute Force
+static int numSubarraysWithSum(int[] arr, int goal) {
+    int count = 0;
+
+    for (int i = 0; i < arr.length; i++) {
+        int sum = 0;
+
+        for (int j = i; j < arr.length; j++) {
+            sum += arr[j];
+
+            if (sum == goal) count++;
+        }
+    }
+
+    return count;
+}
+
+/*
+Time Complexity: O(n^2)
+Space Complexity: O(1)
+*/
+// Optimal (AtMost trick)
+static int numSubarraysWithSum(int[] arr, int goal) {
+    return atMost(arr, goal) - atMost(arr, goal - 1);
+}
+
+static int atMost(int[] arr, int k) {
+    if (k < 0) return 0;
+
+    int left = 0, sum = 0, count = 0;
+
+    for (int right = 0; right < arr.length; right++) {
+        sum += arr[right];
+
+        // Window [left ... right] has sum ≤ k - if goes beyond shrink...
+        while (sum > k) {
+            sum -= arr[left++];
+        }
+
+        count += right - left + 1;
+    }
+
+    return count;
+}
+```
 
 <br/><br/><br/>
 

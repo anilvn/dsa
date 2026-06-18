@@ -1,3 +1,33 @@
+
+I'll extract all the problems listed in the document and create a table for you.Here's a list of all problems in the document organized by number and problem name:
+
+| # | Problem Name |
+|---|---|
+| 1 | Count Subarrays With Sum Greater Than K |
+| 2 | Count Subarrays With Sum Equal To K |
+| 3 | Count Subarrays With Sum Less Than Or Equal To K |
+| 4 | Sliding Window Maximum |
+| 5 | Count Distinct Elements In Every Window Of Size K |
+| 6 | Maximum Points You Can Obtain From Cards |
+| 7 | Longest Substring Without Repeating Characters |
+| 8 | Minimum Size Subarray Sum |
+| 9 | Max Consecutive Ones III |
+| 10 | Fruit Into Baskets |
+| 11 | Longest Substring With At Most K Distinct Characters |
+| 12 | Longest Subarray / Substring With K Distinct Elements |
+| 13 | Longest Repeating Character Replacement |
+| 14 | Subarray Product Less Than K |
+| 15 | Count Subarrays With Product Less Than K |
+| 16 | Binary Subarrays With Sum |
+| 17 | Count Number Of Nice Subarrays |
+| 18 | Subarrays With K Different Integers |
+| 19 | Number Of Substrings Containing All Three Characters |
+| 20 | Minimum Window Substring |
+| 21 | Minimum Size Window (Sum ≥ K) |
+<br/>
+<br/><br/><br/>
+
+
 ## Count Subarrays With Sum Greater Than K
 
 Input
